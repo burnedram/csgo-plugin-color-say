@@ -1,31 +1,9 @@
 #pragma once
 
 #include <iserverplugin.h>
-#include <eiface.h>
-#include <iplayerinfo.h>
-#include <tier1.h>
-#include <igameevents.h>
 
 #include <array>
 #include <ostream>
-
-// We get g_pCVar from tier1.h
-//extern ICvar *g_pCVar;
-extern IVEngineServer *g_pEngine;
-extern IPlayerInfoManager *g_pPlayerInfoManager;
-extern CGlobalVars *g_pGlobals;
-extern IGameEventManager *g_pGameEventManager;
-extern int g_iMaxPlayers;
-
-#define ENTINDEX(pEdict) pEdict - g_pGlobals->pEdicts
-#define LOG(level, format, ...) ConMsg(PLUGIN_NAME ": [" level "] " format"\n", ##__VA_ARGS__)
-#define INFO( format, ...) LOG("INFO",  format, ##__VA_ARGS__)
-#define DEBUG(format, ...) LOG("DEBUG", format, ##__VA_ARGS__)
-#define WARN( format, ...) LOG("WARN",  format, ##__VA_ARGS__)
-#define ERROR(format, ...) LOG("ERROR", format, ##__VA_ARGS__)
-
-#define PLUGIN_NAME "ColorSay"
-#define PLUGIN_VERSION "0.1"
 
 namespace ChatColor {
     enum ID : char {

@@ -1,7 +1,9 @@
 #include "colorsay.h"
 #include "recipientfilters.h"
+#include "globals.h"
+#include "utils.h"
 #include <cstrike15_usermessages.pb.h>
-#include <igameevents.h>
+#include <tier1.h>
 
 #include <string>
 #include <sstream>
@@ -10,12 +12,6 @@ using namespace std;
 
 ColorSayPlugin g_Plugin;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(ColorSayPlugin, IServerPluginCallbacks, INTERFACEVERSION_ISERVERPLUGINCALLBACKS, g_Plugin);
-
-IVEngineServer *g_pEngine = NULL;
-IPlayerInfoManager *g_pPlayerInfoManager = NULL;
-CGlobalVars *g_pGlobals = NULL;
-IGameEventManager *g_pGameEventManager = NULL;
-int g_iMaxPlayers = 0;
 
 void RegisterConCommands() {
     INFO("Registering console commands...");
@@ -41,33 +37,10 @@ ColorSayPlugin::~ColorSayPlugin() {}
 // Return false if there is an error during startup.
 bool ColorSayPlugin::Load(CreateInterfaceFn interfaceFactory, CreateInterfaceFn gameServerFactory) {
     INFO("Loading...");
-    //g_pCVar = (ICvar *) interfaceFactory(CVAR_INTERFACE_VERSION, NULL);
     ConnectTier1Libraries(&interfaceFactory, 1);
-    if(!g_pCVar) {
-        ERROR("No ICvar");
+    if(!colorsay::Globals::SetGlobals(interfaceFactory, gameServerFactory))
         return false;
-    }
-    g_pEngine = (IVEngineServer *) interfaceFactory(INTERFACEVERSION_VENGINESERVER, NULL);
-    if(!g_pEngine) {
-        ERROR("No IVEngineServer");
-        return false;
-    }
-    g_pPlayerInfoManager = (IPlayerInfoManager *) gameServerFactory(INTERFACEVERSION_PLAYERINFOMANAGER, NULL);
-    if(!g_pPlayerInfoManager) {
-        ERROR("No IPlayerInfoManager");
-        return false;
-    }
-    g_pGlobals = g_pPlayerInfoManager->GetGlobalVars();
-    if(!g_pGlobals) {
-        ERROR("No CGlobalVars");
-        return false;
-    }
-    g_pGameEventManager = (IGameEventManager *) interfaceFactory(INTERFACEVERSION_GAMEEVENTSMANAGER, NULL);
-    if(!g_pGameEventManager) {
-        ERROR("No IGameEventManager");
-        return false;
-    }
-    g_pGameEventManager->AddListener(&eventListener, true);
+    colorsay::Globals::pGameEventManager->AddListener(&eventListener, true);
 
     // Everything seems to be ok, we can run
     RegisterConCommands();
@@ -98,7 +71,7 @@ void ColorSayPlugin::LevelInit(char const *pMapName) {
 
 // The server is about to activate
 void ColorSayPlugin::ServerActivate(edict_t *pEdictList, int edictCount, int clientMax) {
-    g_iMaxPlayers = clientMax;
+    colorsay::Globals::maxPlayers = clientMax;
 }
 
 // The server should run physics/think on all edicts
@@ -156,25 +129,25 @@ PLUGIN_RESULT ColorSayPlugin::ClientCommand(edict_t *pEdict, const CCommand &arg
             ss << " Help";
             text = ss.str();
             msg.set_text(text);
-            g_pEngine->SendUserMessage(filter, CS_UM_SayText, msg);
-            g_pEngine->ClientPrintf(pEdict, text.c_str());
-            g_pEngine->ClientPrintf(pEdict, "\n");
+            colorsay::Globals::pEngine->SendUserMessage(filter, CS_UM_SayText, msg);
+            colorsay::Globals::pEngine->ClientPrintf(pEdict, text.c_str());
+            colorsay::Globals::pEngine->ClientPrintf(pEdict, "\n");
 
             ss.str("");
             ss << "GitHub: github.com/burnedram/csgo-plugin-color-say";
             text = ss.str();
             msg.set_text(text);
-            g_pEngine->SendUserMessage(filter, CS_UM_SayText, msg);
-            g_pEngine->ClientPrintf(pEdict, text.c_str());
-            g_pEngine->ClientPrintf(pEdict, "\n");
+            colorsay::Globals::pEngine->SendUserMessage(filter, CS_UM_SayText, msg);
+            colorsay::Globals::pEngine->ClientPrintf(pEdict, text.c_str());
+            colorsay::Globals::pEngine->ClientPrintf(pEdict, "\n");
 
             ss.str("");
             ss << "Available commands: version, list";
             text = ss.str();
             msg.set_text(text);
-            g_pEngine->SendUserMessage(filter, CS_UM_SayText, msg);
-            g_pEngine->ClientPrintf(pEdict, text.c_str());
-            g_pEngine->ClientPrintf(pEdict, "\n");
+            colorsay::Globals::pEngine->SendUserMessage(filter, CS_UM_SayText, msg);
+            colorsay::Globals::pEngine->ClientPrintf(pEdict, text.c_str());
+            colorsay::Globals::pEngine->ClientPrintf(pEdict, "\n");
 
             return PLUGIN_STOP;
         }
@@ -182,9 +155,9 @@ PLUGIN_RESULT ColorSayPlugin::ClientCommand(edict_t *pEdict, const CCommand &arg
             ss << " Plugin version " PLUGIN_VERSION;
             text = ss.str();
             msg.set_text(text);
-            g_pEngine->SendUserMessage(filter, CS_UM_SayText, msg);
-            g_pEngine->ClientPrintf(pEdict, text.c_str());
-            g_pEngine->ClientPrintf(pEdict, "\n");
+            colorsay::Globals::pEngine->SendUserMessage(filter, CS_UM_SayText, msg);
+            colorsay::Globals::pEngine->ClientPrintf(pEdict, text.c_str());
+            colorsay::Globals::pEngine->ClientPrintf(pEdict, "\n");
             return PLUGIN_STOP;
         }
         if(!strcasecmp("list", args.Arg(1))) {
@@ -194,9 +167,9 @@ PLUGIN_RESULT ColorSayPlugin::ClientCommand(edict_t *pEdict, const CCommand &arg
             ss << " Available colors";
             text = ss.str();
             msg.set_text(text);
-            g_pEngine->SendUserMessage(filter, CS_UM_SayText, msg);
-            g_pEngine->ClientPrintf(pEdict, text.c_str());
-            g_pEngine->ClientPrintf(pEdict, "\n");
+            colorsay::Globals::pEngine->SendUserMessage(filter, CS_UM_SayText, msg);
+            colorsay::Globals::pEngine->ClientPrintf(pEdict, text.c_str());
+            colorsay::Globals::pEngine->ClientPrintf(pEdict, "\n");
 
             ss.str("");
             for (color = ChatColor::min; color < ChatColor::max; color++) {
@@ -206,13 +179,13 @@ PLUGIN_RESULT ColorSayPlugin::ClientCommand(edict_t *pEdict, const CCommand &arg
                 ss2 << "r" << (int)rgb.r;
                 ss2 << " g" << (int)rgb.g;
                 ss2 << " b" << (int)rgb.b;
-                g_pEngine->ClientPrintf(pEdict, ss2.str().c_str());
-                g_pEngine->ClientPrintf(pEdict, "\n");
+                colorsay::Globals::pEngine->ClientPrintf(pEdict, ss2.str().c_str());
+                colorsay::Globals::pEngine->ClientPrintf(pEdict, "\n");
                 ss2.str("");
 
                 if ((color - ChatColor::min) % 2 == 1) {
                     msg.set_text(ss.str());
-                    g_pEngine->SendUserMessage(filter, CS_UM_SayText, msg);
+                    colorsay::Globals::pEngine->SendUserMessage(filter, CS_UM_SayText, msg);
                     ss.str("");
                 }
             }
@@ -223,11 +196,11 @@ PLUGIN_RESULT ColorSayPlugin::ClientCommand(edict_t *pEdict, const CCommand &arg
             ss2 << "r" << (int)rgb.r;
             ss2 << " g" << (int)rgb.g;
             ss2 << " b" << (int)rgb.b;
-            g_pEngine->ClientPrintf(pEdict, ss2.str().c_str());
-            g_pEngine->ClientPrintf(pEdict, "\n");
+            colorsay::Globals::pEngine->ClientPrintf(pEdict, ss2.str().c_str());
+            colorsay::Globals::pEngine->ClientPrintf(pEdict, "\n");
 
             msg.set_text(ss.str());
-            g_pEngine->SendUserMessage(filter, CS_UM_SayText, msg);
+            colorsay::Globals::pEngine->SendUserMessage(filter, CS_UM_SayText, msg);
 
             return PLUGIN_STOP;
         }
@@ -235,9 +208,9 @@ PLUGIN_RESULT ColorSayPlugin::ClientCommand(edict_t *pEdict, const CCommand &arg
         ss << " Unknown command";
         text = ss.str();
         msg.set_text(text);
-        g_pEngine->SendUserMessage(filter, CS_UM_SayText, msg);
-        g_pEngine->ClientPrintf(pEdict, text.c_str());
-        g_pEngine->ClientPrintf(pEdict, "\n");
+        colorsay::Globals::pEngine->SendUserMessage(filter, CS_UM_SayText, msg);
+        colorsay::Globals::pEngine->ClientPrintf(pEdict, text.c_str());
+        colorsay::Globals::pEngine->ClientPrintf(pEdict, "\n");
 
         return PLUGIN_STOP;
     }
