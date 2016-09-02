@@ -19,6 +19,8 @@ NETMESSAGES_PB_SOURCE := $(addprefix $(SOURCE_DIR)/protobuf/,netmessages.pb.cc n
 CSTRIKE_PB_SOURCE := $(addprefix $(SOURCE_DIR)/protobuf/,cstrike15_usermessages.pb.cc cstrike15_usermessages.pb.h) 
 PROTOBUF_SOURCE := $(NETMESSAGES_PB_SOURCE) $(CSTRIKE_PB_SOURCE)
 
+OBJECT_FILES := $(patsubst $(SOURCE_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(wildcard $(SOURCE_DIR)/*.cpp)) $(patsubst $(SOURCE_DIR)/protobuf/%.pb.cc,$(BUILD_DIR)/%.pb.o,$(PROTOBUF_SOURCE))
+
 .PHONY: all
 all: prepare colorsay.so
 
@@ -29,7 +31,7 @@ list:
 .PHONY: prepare
 prepare: $(PROTOBUF_SOURCE)
 
-colorsay.so: $(BUILD_DIR)/colorsay.o $(BUILD_DIR)/recipientfilters.o $(BUILD_DIR)/netmessages.pb.o $(BUILD_DIR)/cstrike15_usermessages.pb.o $(addprefix $(CSGO_LIB_DIR)/,libtier0.so libvstdlib.so tier1_i486.a interfaces_i486.a)
+colorsay.so: $(OBJECT_FILES) $(addprefix $(CSGO_LIB_DIR)/,libtier0.so libvstdlib.so tier1_i486.a interfaces_i486.a)
 	$(GCC) -Lhl2sdk-csgo/lib/linux $(patsubst $(CSGO_LIB_DIR)/%.a,-l:%.a,$(patsubst $(CSGO_LIB_DIR)/lib%.so,-l%, $^)) $(OPTIONS) -static-libgcc -lstdc++ $(shell pkg-config --cflags --libs protobuf) -shared -o colorsay.so
 
 $(BUILD_DIR)/colorsay.o: $(addprefix $(SOURCE_DIR)/,colorsay.cpp colorsay.h recipientfilters.h protobuf/cstrike15_usermessages.pb.h) | $(BUILD_DIR)
