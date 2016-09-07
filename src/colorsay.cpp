@@ -2,6 +2,8 @@
 #include "recipientfilters.h"
 #include "globals.h"
 #include "utils.h"
+#include "chatcolors.h"
+#include "chat.h"
 #include <cstrike15_usermessages.pb.h>
 #include <tier1.h>
 
@@ -115,12 +117,7 @@ PLUGIN_RESULT ColorSayPlugin::ClientConnect(bool *bAllowConnect, edict_t *pEntit
 // The client has typed a command at the console
 PLUGIN_RESULT ColorSayPlugin::ClientCommand(edict_t *pEdict, const CCommand &args) {
     if(!strcasecmp("colorsay", args.Arg(0))) {
-        int entindex = ENTINDEX(pEdict);
-        CCSUsrMsg_SayText msg;
-        msg.set_chat(true);
-        ChatFilter filter(entindex);
-
-        ChatColor::ID color = ChatColor::random();
+        colorsay::chatcolor::ID color = colorsay::chatcolor::random();
         ostringstream ss;
         string text;
         ss << "[" << color << PLUGIN_NAME "\01]";
@@ -128,24 +125,21 @@ PLUGIN_RESULT ColorSayPlugin::ClientCommand(edict_t *pEdict, const CCommand &arg
         if(args.ArgC() == 1 || !strcasecmp("help", args.Arg(1))) {
             ss << " Help";
             text = ss.str();
-            msg.set_text(text);
-            colorsay::Globals::pEngine->SendUserMessage(filter, CS_UM_SayText, msg);
+            colorsay::chat::say(pEdict, text);
             colorsay::Globals::pEngine->ClientPrintf(pEdict, text.c_str());
             colorsay::Globals::pEngine->ClientPrintf(pEdict, "\n");
 
             ss.str("");
             ss << "GitHub: github.com/burnedram/csgo-plugin-color-say";
             text = ss.str();
-            msg.set_text(text);
-            colorsay::Globals::pEngine->SendUserMessage(filter, CS_UM_SayText, msg);
+            colorsay::chat::say(pEdict, text);
             colorsay::Globals::pEngine->ClientPrintf(pEdict, text.c_str());
             colorsay::Globals::pEngine->ClientPrintf(pEdict, "\n");
 
             ss.str("");
             ss << "Available commands: version, list";
             text = ss.str();
-            msg.set_text(text);
-            colorsay::Globals::pEngine->SendUserMessage(filter, CS_UM_SayText, msg);
+            colorsay::chat::say(pEdict, text);
             colorsay::Globals::pEngine->ClientPrintf(pEdict, text.c_str());
             colorsay::Globals::pEngine->ClientPrintf(pEdict, "\n");
 
@@ -154,28 +148,26 @@ PLUGIN_RESULT ColorSayPlugin::ClientCommand(edict_t *pEdict, const CCommand &arg
         if(!strcasecmp("version", args.Arg(1))) {
             ss << " Plugin version " PLUGIN_VERSION;
             text = ss.str();
-            msg.set_text(text);
-            colorsay::Globals::pEngine->SendUserMessage(filter, CS_UM_SayText, msg);
+            colorsay::chat::say(pEdict, text);
             colorsay::Globals::pEngine->ClientPrintf(pEdict, text.c_str());
             colorsay::Globals::pEngine->ClientPrintf(pEdict, "\n");
             return PLUGIN_STOP;
         }
         if(!strcasecmp("list", args.Arg(1))) {
             ostringstream ss2;
-            ChatColor::RGB rgb;
+            colorsay::chatcolor::RGB rgb;
 
             ss << " Available colors";
             text = ss.str();
-            msg.set_text(text);
-            colorsay::Globals::pEngine->SendUserMessage(filter, CS_UM_SayText, msg);
+            colorsay::chat::say(pEdict, text);
             colorsay::Globals::pEngine->ClientPrintf(pEdict, text.c_str());
             colorsay::Globals::pEngine->ClientPrintf(pEdict, "\n");
 
             ss.str("");
-            for (color = ChatColor::min; color < ChatColor::max; color++) {
-                ss2 << "(" << (int)color << ") " << color << ChatColor::name[color - ChatColor::min] << "\x01, ";
+            for (color = colorsay::chatcolor::min; color < colorsay::chatcolor::max; color++) {
+                ss2 << "(" << (int)color << ") " << color << colorsay::chatcolor::name(color) << "\x01, ";
                 ss << ss2.str();
-                rgb = ChatColor::rgb[color - ChatColor::min];
+                rgb = colorsay::chatcolor::rgb(color);
                 ss2 << "r" << (int)rgb.r;
                 ss2 << " g" << (int)rgb.g;
                 ss2 << " b" << (int)rgb.b;
@@ -183,32 +175,29 @@ PLUGIN_RESULT ColorSayPlugin::ClientCommand(edict_t *pEdict, const CCommand &arg
                 colorsay::Globals::pEngine->ClientPrintf(pEdict, "\n");
                 ss2.str("");
 
-                if ((color - ChatColor::min) % 2 == 1) {
-                    msg.set_text(ss.str());
-                    colorsay::Globals::pEngine->SendUserMessage(filter, CS_UM_SayText, msg);
+                if ((color - colorsay::chatcolor::min) % 2 == 1) {
+                    colorsay::chat::say(pEdict, ss.str());
                     ss.str("");
                 }
             }
-            ss2 << "(" << (int)color << ") " << color << ChatColor::name[color - ChatColor::min];
+            ss2 << "(" << (int)color << ") " << color << colorsay::chatcolor::name(color);
             ss << ss2.str();
             ss2 << "\x01, ";
-            rgb = ChatColor::rgb[color - ChatColor::min];
+            rgb = colorsay::chatcolor::rgb(color);
             ss2 << "r" << (int)rgb.r;
             ss2 << " g" << (int)rgb.g;
             ss2 << " b" << (int)rgb.b;
             colorsay::Globals::pEngine->ClientPrintf(pEdict, ss2.str().c_str());
             colorsay::Globals::pEngine->ClientPrintf(pEdict, "\n");
 
-            msg.set_text(ss.str());
-            colorsay::Globals::pEngine->SendUserMessage(filter, CS_UM_SayText, msg);
+            colorsay::chat::say(pEdict, ss.str());
 
             return PLUGIN_STOP;
         }
 
         ss << " Unknown command";
         text = ss.str();
-        msg.set_text(text);
-        colorsay::Globals::pEngine->SendUserMessage(filter, CS_UM_SayText, msg);
+        colorsay::chat::say(pEdict, text);
         colorsay::Globals::pEngine->ClientPrintf(pEdict, text.c_str());
         colorsay::Globals::pEngine->ClientPrintf(pEdict, "\n");
 
