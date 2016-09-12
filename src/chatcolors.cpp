@@ -1,6 +1,8 @@
 #include "chatcolors.h"
 #include <array>
 
+using namespace std;
+
 namespace colorsay {
     namespace chatcolor {
 
@@ -33,6 +35,22 @@ namespace colorsay {
            {236, 227, 122},        {174, 193, 215},        { 94, 151, 216},        { 75, 105, 254},
            {136,  71, 254},        {210,  44, 229},        {234,  75,  75},        {225, 172,  57}
         }};
+
+        /*
+         * Parses color tags to their char value, i.e:
+         * This text is{#red} red -> This text is\x02 red
+         */
+        void parce_colors(string &str) {
+            //TODO
+        }
+
+        /*
+         * Removes color tags, i.e:
+         * This text is{#red} red -> This text is red
+         */
+        void strip_colors(string &str) {
+            //TODO
+        }
 
     }
 }

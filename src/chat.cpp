@@ -32,21 +32,5 @@ namespace colorsay {
             Globals::pEngine->SendUserMessage(const_cast<IRecipientFilter &>(filter), CS_UM_SayText, msg);
         }
 
-        /*
-         * Parses color tags to their char value, i.e:
-         * This text is{#red} red -> This text is\x02 red
-         */
-        void parce_colors(string &str) {
-            //TODO
-        }
-
-        /*
-         * Removes color tags, i.e:
-         * This text is{#red} red -> This text is red
-         */
-        void strip_colors(string &str) {
-            //TODO
-        }
-
     }
 }

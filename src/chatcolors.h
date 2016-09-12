@@ -2,7 +2,7 @@
 #include <cstdint>
 #include <array>
 #include <ostream>
-
+#include <string>
 
 namespace colorsay {
     namespace chatcolor {
@@ -38,6 +38,9 @@ namespace colorsay {
         inline const RGB &rgb(const ID &id) {
             return rgbs[id - min];
         }
+
+        void parse_colors(std::string &str);
+        void strip_colors(std::string &str);
 
     }
 }
