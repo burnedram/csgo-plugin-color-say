@@ -3,6 +3,7 @@
 #include "globals.h"
 #include "utils.h"
 #include "colorcommands.h"
+#include "console.h"
 #include <cstrike15_usermessages.pb.h>
 #include <tier1.h>
 
@@ -121,13 +122,13 @@ PLUGIN_RESULT ColorSayPlugin::ClientCommand(edict_t *pEdict, const CCommand &arg
     if(args.ArgC() == 1) {
         ostringstream ss;
         ss << "Usage: colorsay <command>\n";
-        colorsay::Globals::pEngine->ClientPrintf(pEdict, ss.str().c_str());
+        colorsay::console::println(pEdict, ss.str().c_str());
         return PLUGIN_STOP;
     }
     if(!colorsay::colorcommands::exists(args.Arg(1))) {
         ostringstream ss;
         ss << "Unknown command \"" << args.Arg(1) << "\"\n";
-        colorsay::Globals::pEngine->ClientPrintf(pEdict, ss.str().c_str());
+        colorsay::console::println(pEdict, ss.str().c_str());
         return PLUGIN_STOP;
     }
 

@@ -3,6 +3,7 @@
 #include "constants.h"
 #include "chatcolors.h"
 #include "chat.h"
+#include "console.h"
 #include <unordered_map>
 #include <sstream>
 #include <algorithm>
@@ -53,25 +54,25 @@ namespace colorsay {
                 const string &name = argv[1];
                 if(!colorcommands::exists(name)) {
                     ss << "Unknown command \"" << name << "\"\n";
-                    Globals::pEngine->ClientPrintf(pEdict, ss.str().c_str());
+                    console::println(pEdict, ss.str().c_str());
                 } else {
                     const ColorCommand *cmd = colorcommands::_commands.at(name);
                     ss << "Usage: " << cmd->get_usage() << "\n\n" << cmd->get_help() << "\n";
-                    Globals::pEngine->ClientPrintf(pEdict, ss.str().c_str());
+                    console::println(pEdict, ss.str().c_str());
                 }
             } else if (argv.size() == 1) {
-                Globals::pEngine->ClientPrintf(pEdict, "GitHub: github.com/burnedram/csgo-plugin-color-say\n\nAvailable commands:\n");
+                console::println(pEdict, "GitHub: github.com/burnedram/csgo-plugin-color-say\n\nAvailable commands:\n");
                 for (auto &pair : colorcommands::_commands) {
                     auto &cc = pair.second;
-                    Globals::pEngine->ClientPrintf(pEdict, "\t");
-                    Globals::pEngine->ClientPrintf(pEdict, cc->get_name().c_str());
-                    Globals::pEngine->ClientPrintf(pEdict, ": ");
-                    Globals::pEngine->ClientPrintf(pEdict, cc->get_description().c_str());
-                    Globals::pEngine->ClientPrintf(pEdict, "\n");
+                    console::println(pEdict, "\t");
+                    console::println(pEdict, cc->get_name().c_str());
+                    console::println(pEdict, ": ");
+                    console::println(pEdict, cc->get_description().c_str());
+                    console::println(pEdict, "\n");
                 }
             } else {
                 ss << "Usage: " << get_usage() << "\n";
-                Globals::pEngine->ClientPrintf(pEdict, ss.str().c_str());
+                console::println(pEdict, ss.str().c_str());
             }
             return PLUGIN_STOP;
         }
@@ -96,7 +97,7 @@ namespace colorsay {
         }
 
         virtual PLUGIN_RESULT invoke(edict_t *pEdict, const string &args, const vector<string> &argv) const {
-            Globals::pEngine->ClientPrintf(pEdict, "Plugin version " PLUGIN_VERSION "\n");
+            console::println(pEdict, "Plugin version " PLUGIN_VERSION);
             ostringstream ss;
             ss << "[" << chatcolor::random() << PLUGIN_NAME << chatcolor::ID::WHITE << "] Plugin version " PLUGIN_VERSION;
             chat::say(pEdict, ss.str());
@@ -132,8 +133,7 @@ namespace colorsay {
             ss << "[" << chatcolor::random() << PLUGIN_NAME << chatcolor::ID::WHITE << "] Available colors";
             text = ss.str();
             chat::say(pEdict, text);
-            Globals::pEngine->ClientPrintf(pEdict, text.c_str());
-            Globals::pEngine->ClientPrintf(pEdict, "\n");
+            console::println(pEdict, text.c_str());
 
             ss.str("");
             for (color = chatcolor::min; color < chatcolor::max; color++) {
@@ -143,8 +143,7 @@ namespace colorsay {
                 ss2 << "r" << (int)rgb.r;
                 ss2 << " g" << (int)rgb.g;
                 ss2 << " b" << (int)rgb.b;
-                Globals::pEngine->ClientPrintf(pEdict, ss2.str().c_str());
-                Globals::pEngine->ClientPrintf(pEdict, "\n");
+                console::println(pEdict, ss2.str().c_str());
                 ss2.str("");
 
                 if ((color - chatcolor::min) % 2 == 1) {
@@ -159,8 +158,7 @@ namespace colorsay {
             ss2 << "r" << (int)rgb.r;
             ss2 << " g" << (int)rgb.g;
             ss2 << " b" << (int)rgb.b;
-            Globals::pEngine->ClientPrintf(pEdict, ss2.str().c_str());
-            Globals::pEngine->ClientPrintf(pEdict, "\n");
+            console::println(pEdict, ss2.str().c_str());
 
             chat::say(pEdict, ss.str());
 
