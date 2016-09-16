@@ -99,8 +99,10 @@ namespace colorsay {
         virtual PLUGIN_RESULT invoke(edict_t *pEdict, const string &args, const vector<string> &argv) const {
             console::println(pEdict, "Plugin version " PLUGIN_VERSION);
             ostringstream ss;
-            ss << "[" << chatcolor::random() << PLUGIN_NAME << chatcolor::ID::WHITE << "] Plugin version " PLUGIN_VERSION;
-            chat::say(pEdict, ss.str());
+            ss << "[{#" << chatcolor::random() << "}" << PLUGIN_NAME << "{#" << chatcolor::ID::WHITE << "}] Plugin version " PLUGIN_VERSION;
+            string str = ss.str();
+            chatcolor::parse_colors(str);
+            chat::say(pEdict, str);
             return PLUGIN_STOP;
         }
     };
@@ -126,41 +128,40 @@ namespace colorsay {
         virtual PLUGIN_RESULT invoke(edict_t *pEdict, const string &args, const vector<string> &argv) const {
             ostringstream ss;
             ostringstream ss2;
-            string text;
+            string chat_text, console_text;
             chatcolor::RGB rgb;
             chatcolor::ID color;
 
-            ss << "[" << chatcolor::random() << PLUGIN_NAME << chatcolor::ID::WHITE << "] Available colors";
-            text = ss.str();
-            chat::say(pEdict, text);
-            console::println(pEdict, text.c_str());
+            ss << "[{#" << (int)chatcolor::random() << "}" << PLUGIN_NAME << "{#1}] Available colors";
+            chat_text = ss.str();
+            chatcolor::parse_colors(chat_text);
+            chatcolor::parse_colors(console_text, true);
+            chat::say(pEdict, chat_text);
 
             ss.str("");
-            for (color = chatcolor::min; color < chatcolor::max; color++) {
-                ss2 << "(" << (int)color << ") " << color << chatcolor::name(color) << "\x01, ";
+            for (color = chatcolor::min; color <= chatcolor::max; color++) {
+                ss2 << "(" << (int)color << ") {#" << (int)color << "}" << chatcolor::name(color);
+                if(color < chatcolor::max)
+                    ss2 << "{#1}, ";
                 ss << ss2.str();
+                if(color == chatcolor::max)
+                    ss2 << ", ";
                 rgb = chatcolor::rgb(color);
                 ss2 << "r" << (int)rgb.r;
                 ss2 << " g" << (int)rgb.g;
                 ss2 << " b" << (int)rgb.b;
-                console::println(pEdict, ss2.str().c_str());
+                console_text = ss2.str();
+                chatcolor::parse_colors(console_text, true);
+                console::println(pEdict, console_text.c_str());
                 ss2.str("");
 
-                if ((color - chatcolor::min) % 2 == 1) {
-                    chat::say(pEdict, ss.str());
+                if ((color - chatcolor::min) % 2 == 1 || color == chatcolor::max) {
+                    chat_text = ss.str();
+                    chatcolor::parse_colors(chat_text);
+                    chat::say(pEdict, chat_text);
                     ss.str("");
                 }
             }
-            ss2 << "(" << (int)color << ") " << color << chatcolor::name(color);
-            ss << ss2.str();
-            ss2 << chatcolor::ID::WHITE << ", ";
-            rgb = chatcolor::rgb(color);
-            ss2 << "r" << (int)rgb.r;
-            ss2 << " g" << (int)rgb.g;
-            ss2 << " b" << (int)rgb.b;
-            console::println(pEdict, ss2.str().c_str());
-
-            chat::say(pEdict, ss.str());
 
             return PLUGIN_STOP;
         }
