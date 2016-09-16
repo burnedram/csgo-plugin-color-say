@@ -9,7 +9,7 @@ namespace colorsay {
         void print(edict_t *pEdict, const string &msg, bool stripcolors) {
             if(stripcolors) {
                 string stripped(msg);
-                chatcolor::strip_colors(stripped);
+                chatcolor::parse_colors(stripped, true);
                 Globals::pEngine->ClientPrintf(pEdict, stripped.c_str());
             } else
                 Globals::pEngine->ClientPrintf(pEdict, msg.c_str());

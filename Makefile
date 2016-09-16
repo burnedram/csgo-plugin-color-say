@@ -6,7 +6,7 @@ GCC := g++-4.6
 WARNINGS := -Wall -Werror
 OPTIONS := -m32 -pipe -msse -mfpmath=sse -std=c++0x
 # When updating to a newer version of g++, use -std=c++11
-FLAGS := -fvisibility=hidden -fvisibility-inlines-hidden -fno-exceptions -fno-threadsafe-statics
+FLAGS := -fvisibility=hidden -fvisibility-inlines-hidden -fexceptions -fno-threadsafe-statics
 EXTRA_FLAGS := -fno-rtti
 DEFINES := -Dstricmp=strcasecmp -D_stricmp=strcasecmp -D_snprintf=snprintf \
 		  -D_vsnprintf=vsnprintf -DGNUC -D_LINUX -DPOSIX -DCOMPILER_GCC

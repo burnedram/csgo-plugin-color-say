@@ -23,7 +23,7 @@ namespace colorsay {
         }
 
         PLUGIN_RESULT invoke(edict_t *pEdict, const string &name, const string &args, const vector<string> &argv) {
-            string lowername = name;
+            string lowername(name);
             std::transform(lowername.begin(), lowername.end(), lowername.begin(), ::tolower);
             return _commands.at(lowername)->invoke(pEdict, args, argv);
         }
@@ -166,12 +166,42 @@ namespace colorsay {
         }
     };
 
+    class EchoCommand : public ColorCommand {
+    public:
+        virtual const string get_name() const {
+            return "echo";
+        }
+
+        virtual const string get_description() const {
+            return "Prints colored text for you (and only you)";
+        }
+
+        virtual const string get_usage() const {
+            return "echo <message>";
+        }
+
+        virtual const string get_help() const {
+            return "Prints <message> in your chat window. Color tags are enabled.\nFor more info see \"list\"";
+        }
+
+        virtual PLUGIN_RESULT invoke(edict_t *pEdict, const string &args, const vector<string> &argv) const {
+            if(argv.size() < 2) {
+                console::println(pEdict, "Missing arg");
+                return PLUGIN_STOP;
+            }
+            string parsed(args);
+            chatcolor::parse_colors(parsed);
+            chat::say(pEdict, parsed);
+            return PLUGIN_STOP;
+        }
+    };
+
     namespace colorcommands {
 
         void register_commands() {
             for (auto cc :  initializer_list<ColorCommand *>({
                         new HelpCommand(), new VersionCommand(),
-                        new AvailableColorsCommand()}))
+                        new AvailableColorsCommand(), new EchoCommand()}))
                 _commands[cc->get_name()] = cc;
         }
 
