@@ -4,8 +4,6 @@
 
 class ColorSayPlugin : public IServerPluginCallbacks {
     public:
-        static ColorSayPlugin  *g_pInstance;
-
                                 ColorSayPlugin();
         virtual                 ~ColorSayPlugin();
 

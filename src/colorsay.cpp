@@ -12,28 +12,11 @@
 
 using namespace std;
 
-ColorSayPlugin g_Plugin;
-EXPOSE_SINGLE_INTERFACE_GLOBALVAR(ColorSayPlugin, IServerPluginCallbacks, INTERFACEVERSION_ISERVERPLUGINCALLBACKS, g_Plugin);
+ColorSayPlugin g_pPlugin;
+EXPOSE_SINGLE_INTERFACE_GLOBALVAR(ColorSayPlugin, IServerPluginCallbacks, INTERFACEVERSION_ISERVERPLUGINCALLBACKS, g_pPlugin);
 
-void RegisterConCommands() {
-    INFO("Registering console commands...");
-    colorsay::colorcommands::register_commands();
-}
 
-class EventListener : public IGameEventListener {
-    public:
-        virtual ~EventListener(void) {};
-        virtual void FireGameEvent(KeyValues *event) {
-            //DEBUG("EVENT: %s", event->GetName());
-        }
-};
-EventListener eventListener;
-
-ColorSayPlugin *ColorSayPlugin::g_pInstance = nullptr;
-
-ColorSayPlugin::ColorSayPlugin() {
-    g_pInstance = this;
-}
+ColorSayPlugin::ColorSayPlugin() {}
 ColorSayPlugin::~ColorSayPlugin() {}
 
 // Initialize the plugin to run
@@ -41,12 +24,14 @@ ColorSayPlugin::~ColorSayPlugin() {}
 bool ColorSayPlugin::Load(CreateInterfaceFn interfaceFactory, CreateInterfaceFn gameServerFactory) {
     INFO("Loading...");
     ConnectTier1Libraries(&interfaceFactory, 1);
-    if(!colorsay::Globals::SetGlobals(interfaceFactory, gameServerFactory))
+    if(!colorsay::Globals::SetGlobals(interfaceFactory, gameServerFactory)) {
+        INFO("Plugin NOT loaded!");
         return false;
-    colorsay::Globals::pGameEventManager->AddListener(&eventListener, true);
+    }
 
-    // Everything seems to be ok, we can run
-    RegisterConCommands();
+    INFO("Registering client console commands...");
+    colorsay::colorcommands::register_commands();
+
     INFO("Plugin loaded!");
     return true;
 }
