@@ -2,7 +2,7 @@
 #include "recipientfilters.h"
 #include "globals.h"
 #include "utils.h"
-#include "colorcommands.h"
+#include "clientcommands.h"
 #include "console.h"
 #include <cstrike15_usermessages.pb.h>
 #include <tier1.h>
@@ -30,7 +30,7 @@ bool ColorSayPlugin::Load(CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
     }
 
     INFO("Registering client console commands...");
-    colorsay::colorcommands::register_commands();
+    colorsay::clientcommands::register_commands();
 
     INFO("Plugin loaded!");
     return true;
@@ -110,7 +110,7 @@ PLUGIN_RESULT ColorSayPlugin::ClientCommand(edict_t *pEdict, const CCommand &arg
         colorsay::console::println(pEdict, ss.str().c_str());
         return PLUGIN_STOP;
     }
-    if(!colorsay::colorcommands::exists(args.Arg(1))) {
+    if(!colorsay::clientcommands::exists(args.Arg(1))) {
         ostringstream ss;
         ss << "Unknown command \"" << args.Arg(1) << "\"\n";
         colorsay::console::println(pEdict, ss.str().c_str());
@@ -127,7 +127,7 @@ PLUGIN_RESULT ColorSayPlugin::ClientCommand(edict_t *pEdict, const CCommand &arg
     if(trim != string::npos)
         stl_args = stl_args.substr(trim);
 
-    return colorsay::colorcommands::invoke(pEdict, stl_argv.front(), stl_args, stl_argv);
+    return colorsay::clientcommands::invoke(pEdict, stl_argv.front(), stl_args, stl_argv);
 }
 
 // A user has had their network id setup and validated 

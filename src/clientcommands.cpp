@@ -1,4 +1,4 @@
-#include "colorcommands.h"
+#include "clientcommands.h"
 #include "globals.h"
 #include "constants.h"
 #include "chatcolors.h"
@@ -12,7 +12,7 @@ using namespace std;
 
 namespace colorsay {
 
-    namespace colorcommands {
+    namespace clientcommands {
 
         static unordered_map<string, ColorCommand *> _commands;
 
@@ -52,17 +52,17 @@ namespace colorsay {
             ostringstream ss;
             if (argv.size() == 2) {
                 const string &name = argv[1];
-                if(!colorcommands::exists(name)) {
+                if(!clientcommands::exists(name)) {
                     ss << "Unknown command \"" << name << "\"\n";
                     console::println(pEdict, ss.str());
                 } else {
-                    const ColorCommand *cmd = colorcommands::_commands.at(name);
+                    const ColorCommand *cmd = clientcommands::_commands.at(name);
                     ss << "Usage: " << cmd->get_usage() << "\n\n" << cmd->get_help() << "\n";
                     console::println(pEdict, ss.str());
                 }
             } else if (argv.size() == 1) {
                 console::println(pEdict, "GitHub: github.com/burnedram/csgo-plugin-color-say\nAvailable commands:\n");
-                for (auto &pair : colorcommands::_commands) {
+                for (auto &pair : clientcommands::_commands) {
                     auto &cc = pair.second;
                     console::print(pEdict, cc->get_usage());
                     console::print(pEdict, "\n\t");
@@ -257,7 +257,7 @@ namespace colorsay {
         }
     };
 
-    namespace colorcommands {
+    namespace clientcommands {
 
         void register_commands() {
             for (auto cc :  initializer_list<ColorCommand *>({

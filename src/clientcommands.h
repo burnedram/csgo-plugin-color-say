@@ -4,7 +4,7 @@
 #include <vector>
 
 namespace colorsay {
-    namespace colorcommands {
+    namespace clientcommands {
         void register_commands();
         bool exists(const std::string &name);
         PLUGIN_RESULT invoke(edict_t *pEdict, const std::string &name, const std::string &args, const std::vector<std::string> &argv);
