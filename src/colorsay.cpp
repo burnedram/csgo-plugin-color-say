@@ -2,6 +2,7 @@
 #include "globals.h"
 #include "utils.h"
 #include "console.h"
+#include "chatcolor.h"
 #include "clientcommands.h"
 #include <tier1.h>
 
@@ -26,6 +27,9 @@ namespace colorsay {
             INFO("Plugin NOT loaded!");
             return false;
         }
+
+        INFO("Initializing color parser");
+        chatcolor::init_color_parser();
 
         INFO("Registering client console commands...");
         clientcommands::register_commands();

@@ -1,7 +1,7 @@
 #include "clientcommands.h"
 #include "globals.h"
 #include "constants.h"
-#include "chatcolors.h"
+#include "chatcolor.h"
 #include "chat.h"
 #include "console.h"
 #include <unordered_map>
@@ -149,7 +149,7 @@ namespace colorsay {
                 ss2 << " g" << (int)rgb.g;
                 ss2 << " b" << (int)rgb.b;
                 console_text = ss2.str();
-                chatcolor::parse_colors(console_text, true);
+                chatcolor::strip_colors(console_text);
                 console::println(pEdict, console_text);
                 ss2.str("");
 

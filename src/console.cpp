@@ -1,6 +1,5 @@
 #include "console.h"
 #include "globals.h"
-#include "chatcolors.h"
 
 using namespace std;
 

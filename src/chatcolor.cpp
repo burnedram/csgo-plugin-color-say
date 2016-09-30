@@ -1,4 +1,4 @@
-#include "chatcolors.h"
+#include "chatcolor.h"
 #include "utils.h"
 #include <array>
 #include <stdexcept>
@@ -41,6 +41,13 @@ namespace colorsay {
         }};
 
         static unordered_map<string, ID> _name_to_id;
+        void init_color_parser() {
+            for(ID id = chatcolor::min; id <= chatcolor::max; id++) {
+                string name(chatcolor::name(id));
+                std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+                _name_to_id[name] = id;
+            }
+        }
 
         /*
          * Parses color tags to their char value, i.e:
@@ -53,16 +60,7 @@ namespace colorsay {
          * All color names can be found in the colorsay::chatcolor::tags array.
          * Also see colorsay::chatcolor::tag
          */
-        bool parse_colors(string &str, bool strip) {
-            if(_name_to_id.empty()) {
-                // Init _name_to_id
-                for(ID id = chatcolor::min; id <= chatcolor::max; id++) {
-                    string name(chatcolor::name(id));
-                    std::transform(name.begin(), name.end(), name.begin(), ::tolower);
-                    _name_to_id[name] = id;
-                }
-            }
-
+        static bool __parse_colors(string &str, bool strip) {
             // some cool text{#color_name_or_value}some colored text
             //        start--^ ^                  ^^--end
             //                 |                  |
@@ -156,6 +154,14 @@ namespace colorsay {
                 //INFO("\t\tParse successfull");
             }
             return success;
+        }
+
+        bool parse_colors(std::string &str) {
+            return __parse_colors(str, false);
+        }
+
+        bool strip_colors(std::string &str) {
+            return __parse_colors(str, true);
         }
 
     }

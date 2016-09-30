@@ -39,7 +39,9 @@ namespace colorsay {
             return rgbs[id - min];
         }
 
-        bool parse_colors(std::string &str, bool strip = false);
+        void init_color_parser();
+        bool parse_colors(std::string &str);
+        bool strip_colors(std::string &str);
 
     }
 }
