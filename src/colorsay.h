@@ -1,5 +1,4 @@
 #pragma once
-
 #include <iserverplugin.h>
 
 namespace colorsay {

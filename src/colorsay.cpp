@@ -1,10 +1,8 @@
 #include "colorsay.h"
-#include "recipientfilters.h"
 #include "globals.h"
 #include "utils.h"
-#include "clientcommands.h"
 #include "console.h"
-#include <cstrike15_usermessages.pb.h>
+#include "clientcommands.h"
 #include <tier1.h>
 
 #include <string>
@@ -38,6 +36,7 @@ namespace colorsay {
 
     // Called when the plugin should be shutdown
     void ColorSayPlugin::Unload() {
+        DisconnectTier1Libraries();
     }
 
     // called when a plugins execution is stopped but the plugin is not unloaded
