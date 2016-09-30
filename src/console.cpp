@@ -6,17 +6,16 @@ using namespace std;
 
 namespace colorsay {
     namespace console {
-        void print(edict_t *pEdict, const string &msg, bool stripcolors) {
-            if(stripcolors) {
-                string stripped(msg);
-                chatcolor::parse_colors(stripped, true);
-                Globals::pEngine->ClientPrintf(pEdict, stripped.c_str());
-            } else
-                Globals::pEngine->ClientPrintf(pEdict, msg.c_str());
+        void print(edict_t *pEdict, const string &msg) {
+            Globals::pEngine->ClientPrintf(pEdict, msg.c_str());
         }
 
-        void println(edict_t *pEdict, const string &msg, bool stripcolors) {
-            print(pEdict, msg, stripcolors);
+        void println(edict_t *pEdict) {
+            Globals::pEngine->ClientPrintf(pEdict, "\n");
+        }
+
+        void println(edict_t *pEdict, const string &msg) {
+            print(pEdict, msg);
             Globals::pEngine->ClientPrintf(pEdict, "\n");
         }
     }

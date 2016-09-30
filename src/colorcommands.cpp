@@ -54,21 +54,19 @@ namespace colorsay {
                 const string &name = argv[1];
                 if(!colorcommands::exists(name)) {
                     ss << "Unknown command \"" << name << "\"\n";
-                    console::println(pEdict, ss.str().c_str());
+                    console::println(pEdict, ss.str());
                 } else {
                     const ColorCommand *cmd = colorcommands::_commands.at(name);
                     ss << "Usage: " << cmd->get_usage() << "\n\n" << cmd->get_help() << "\n";
-                    console::println(pEdict, ss.str().c_str());
+                    console::println(pEdict, ss.str());
                 }
             } else if (argv.size() == 1) {
-                console::println(pEdict, "GitHub: github.com/burnedram/csgo-plugin-color-say\n\nAvailable commands:\n");
+                console::println(pEdict, "GitHub: github.com/burnedram/csgo-plugin-color-say\nAvailable commands:\n");
                 for (auto &pair : colorcommands::_commands) {
                     auto &cc = pair.second;
-                    console::println(pEdict, "\t");
-                    console::println(pEdict, cc->get_name().c_str());
-                    console::println(pEdict, ": ");
-                    console::println(pEdict, cc->get_description().c_str());
-                    console::println(pEdict, "\n");
+                    console::print(pEdict, cc->get_usage());
+                    console::print(pEdict, "\n\t");
+                    console::println(pEdict, cc->get_description());
                 }
             } else {
                 ss << "Usage: " << get_usage() << "\n";
@@ -99,7 +97,7 @@ namespace colorsay {
         virtual PLUGIN_RESULT invoke(edict_t *pEdict, const string &args, const vector<string> &argv) const {
             console::println(pEdict, "Plugin version " PLUGIN_VERSION);
             ostringstream ss;
-            ss << "[{#" << chatcolor::random() << "}" << PLUGIN_NAME << "{#" << chatcolor::ID::WHITE << "}] Plugin version " PLUGIN_VERSION;
+            ss << "[" << chatcolor::random() << PLUGIN_NAME << chatcolor::ID::WHITE << "] Plugin version " PLUGIN_VERSION;
             string str = ss.str();
             chatcolor::parse_colors(str);
             chat::say(pEdict, str);
@@ -132,11 +130,11 @@ namespace colorsay {
             chatcolor::RGB rgb;
             chatcolor::ID color;
 
-            ss << "[{#" << (int)chatcolor::random() << "}" << PLUGIN_NAME << "{#1}] Available colors";
+            ss << "[" << chatcolor::random() << PLUGIN_NAME << "] Available colors";
             chat_text = ss.str();
             chatcolor::parse_colors(chat_text);
-            chatcolor::parse_colors(console_text, true);
             chat::say(pEdict, chat_text);
+            console::println(pEdict, "Available colors");
 
             ss.str("");
             for (color = chatcolor::min; color <= chatcolor::max; color++) {
@@ -152,7 +150,7 @@ namespace colorsay {
                 ss2 << " b" << (int)rgb.b;
                 console_text = ss2.str();
                 chatcolor::parse_colors(console_text, true);
-                console::println(pEdict, console_text.c_str());
+                console::println(pEdict, console_text);
                 ss2.str("");
 
                 if ((color - chatcolor::min) % 2 == 1 || color == chatcolor::max) {
@@ -191,8 +189,40 @@ namespace colorsay {
                 return PLUGIN_STOP;
             }
             string parsed(args);
-            chatcolor::parse_colors(parsed);
+            if (!chatcolor::parse_colors(parsed))
+                console::println(pEdict, "Message contains bad tags");
             chat::say(pEdict, parsed);
+            return PLUGIN_STOP;
+        }
+    };
+
+    class SayCommand : public ColorCommand {
+    public:
+        virtual const string get_name() const {
+            return "say";
+        }
+
+        virtual const string get_description() const {
+            return "Chat in color";
+        }
+
+        virtual const string get_usage() const {
+            return "say <message>";
+        }
+
+        virtual const string get_help() const {
+            return "Sends <message> to everyone in the server. Color tags are enabled.\nFor more info see \"list\"";
+        }
+
+        virtual PLUGIN_RESULT invoke(edict_t *pEdict, const string &args, const vector<string> &argv) const {
+            if(argv.size() < 2) {
+                console::println(pEdict, "Missing arg");
+                return PLUGIN_STOP;
+            }
+            string parsed(args);
+            if (!chatcolor::parse_colors(parsed))
+                console::println(pEdict, "Message contains bad tags");
+            chat::say_all(parsed);
             return PLUGIN_STOP;
         }
     };
@@ -202,7 +232,8 @@ namespace colorsay {
         void register_commands() {
             for (auto cc :  initializer_list<ColorCommand *>({
                         new HelpCommand(), new VersionCommand(),
-                        new AvailableColorsCommand(), new EchoCommand()}))
+                        new AvailableColorsCommand(), new EchoCommand(),
+                        new SayCommand()}))
                 _commands[cc->get_name()] = cc;
         }
 

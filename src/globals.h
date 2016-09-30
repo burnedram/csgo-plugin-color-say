@@ -4,7 +4,8 @@
 #include <iplayerinfo.h>
 #include <igameevents.h>
 
-#define ENTINDEX(pEdict) pEdict - colorsay::Globals::pGlobals->pEdicts
+#define ENTINDEX(pEdict) static_cast<int>(pEdict - colorsay::Globals::pGlobals->pEdicts)
+#define ENTEDICT(index) static_cast<edict_t *>(colorsay::Globals::pGlobals->pEdicts + index)
 
 namespace colorsay {
     namespace Globals {

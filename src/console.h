@@ -4,7 +4,8 @@
 
 namespace colorsay {
     namespace console {
-        void print(edict_t *pEdict, const std::string &msg, bool stripcolors = true);
-        void println(edict_t *pEdict, const std::string &msg, bool stripcolors = true);
+        void print(edict_t *pEdict, const std::string &msg);
+        void println(edict_t *pEdict);
+        void println(edict_t *pEdict, const std::string &msg);
     }
 }
