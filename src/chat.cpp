@@ -23,6 +23,26 @@ namespace colorsay {
             say(indices, str);
         }
 
+        void say_team(edict_t *pEdict, const string &str) {
+            IPlayerInfo *pInfo = Globals::pPlayerInfoManager->GetPlayerInfo(pEdict);
+            int team = pInfo->GetTeamIndex();
+            say_team(team, str);
+        }
+
+        void say_team(int teamIndex, const string &str) {
+            vector<int> indices;
+            indices.reserve(Globals::maxPlayers);
+            for(int index = 1; index <= Globals::maxPlayers; index++) {
+                edict_t *pEdict = ENTEDICT(index);
+                if(Globals::pEngine->GetPlayerUserId(pEdict) == -1)
+                    continue;
+                IPlayerInfo *pInfo = Globals::pPlayerInfoManager->GetPlayerInfo(pEdict);
+                if(pInfo->GetTeamIndex() == teamIndex)
+                    indices.push_back(index);
+            }
+            say(indices, str);
+        }
+
         void say(edict_t *pEdict, const string &str) {
             ChatFilter filter(ENTINDEX(pEdict));
             say(filter, str);

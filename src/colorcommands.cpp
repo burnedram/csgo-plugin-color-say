@@ -227,13 +227,43 @@ namespace colorsay {
         }
     };
 
+    class SayTeamCommand : public ColorCommand {
+        virtual const string get_name() const {
+            return "say_team";
+        }
+
+        virtual const string get_description() const {
+            return "Teamchat in color";
+        }
+
+        virtual const string get_usage() const {
+            return "say_team <message>";
+        }
+
+        virtual const string get_help() const {
+            return "Sends <message> to everyone on your team. Color tags are enabled.\nFor more info see \"list\"";
+        }
+
+        virtual PLUGIN_RESULT invoke(edict_t *pEdict, const string &args, const vector<string> &argv) const {
+            if(argv.size() < 2) {
+                console::println(pEdict, "Missing arg");
+                return PLUGIN_STOP;
+            }
+            string parsed(args);
+            if (!chatcolor::parse_colors(parsed))
+                console::println(pEdict, "Message contains bad tags");
+            chat::say_team(pEdict, parsed);
+            return PLUGIN_STOP;
+        }
+    };
+
     namespace colorcommands {
 
         void register_commands() {
             for (auto cc :  initializer_list<ColorCommand *>({
                         new HelpCommand(), new VersionCommand(),
                         new AvailableColorsCommand(), new EchoCommand(),
-                        new SayCommand()}))
+                        new SayCommand(), new SayTeamCommand()}))
                 _commands[cc->get_name()] = cc;
         }
 
