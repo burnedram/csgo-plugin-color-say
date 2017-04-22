@@ -66,11 +66,9 @@ namespace colorsay {
             //                 |                  |
             //            start_name           end_name
             size_t pos = 0, pos_value, start, start_name, end, end_name, len, len_name;
-            //size_t total_offset = 0;
             int value;
             bool success = true;
 
-            //INFO("Parsing colored message \"%s\"", str.c_str());
             while (true) {
                 start = str.find("{#", pos);
                 if(start == string::npos) {
@@ -80,7 +78,6 @@ namespace colorsay {
                 end_name = str.find("}", start_name);
                 if(end_name == string::npos) {
                     success = false;
-                    //WARN("\tExpected \"}\" after %d", start_name + total_offset);
                     pos = start_name;
                     continue;
                 }
@@ -90,31 +87,25 @@ namespace colorsay {
                 pos = end;
                 if(len_name == 0) {
                     success = false;
-                    //WARN("\tEmpty color tag at %d", start_name + total_offset);
                     continue;
                 }
                 string name = str.substr(start_name, len_name);
-                //INFO("\tParsing \"%s\" ", name.c_str());
                 if(isdigit(name[0])) {
                     try {
                         value = stoi(name, &pos_value);
                     } catch(const invalid_argument &ex) {
                         success = false;
-                        //WARN("\t\tNon integer value at %d", start_name + total_offset);
                         continue;
                     } catch(const out_of_range &ex) {
                         success = false;
-                        //WARN("\t\tValue out of range at %d", start_name + total_offset);
                         continue;
                     }
                     if(len_name != pos_value) {
                         success = false;
-                        //WARN("\t\tNon integer value at %d", start_name + total_offset);
                         continue;
                     }
                     if(value < chatcolor::min || value > chatcolor::max) {
                         success = false;
-                        //WARN("\t\tValue out of range at %d", start_name + total_offset);
                         continue;
                     }
                     if(strip) {
@@ -135,23 +126,20 @@ namespace colorsay {
                         }
                     } else {
                         success = false;
-                        //WARN("\t\tUnknown name or missing \"}\" after %d", start_name + total_offset);
                         pos = start_name;
                         continue;
                     }
                 }
-                //total_offset += len;
                 pos = start;
                 if(!strip) {
-                    //total_offset--;
                     pos++;
-                    if(start == 0) {
-                        //INFO("\t\tInserting space at beginning of string");
+                    if(start == 0 && value != WHITE) {
+                        // We need a valid character at the start of the message
+                        // If the color is white however we don't have to do anything
                         str.insert(0, " ");
                         pos++;
                     }
                 }
-                //INFO("\t\tParse successfull");
             }
             return success;
         }
