@@ -4,6 +4,7 @@
 #include "console.h"
 #include "chatcolor.h"
 #include "clientcommands.h"
+#include "servercommands.h"
 #include <tier1.h>
 
 #include <string>
@@ -30,6 +31,9 @@ namespace colorsay {
 
         INFO("Initializing color parser");
         chatcolor::init_color_parser();
+
+        INFO("Registering server console commands...");
+        servercommands::register_commands();
 
         INFO("Registering client console commands...");
         clientcommands::register_commands();
@@ -105,6 +109,8 @@ namespace colorsay {
 
     // The client has typed a command at the console
     PLUGIN_RESULT ColorSayPlugin::ClientCommand(edict_t *pEdict, const CCommand &args) {
+        if(!servercommands::cvAllowClientCommands.GetBool())
+            return PLUGIN_CONTINUE;
         if(strcasecmp("colorsay", args.Arg(0)))
             return PLUGIN_CONTINUE;
         if(args.ArgC() == 1) {
