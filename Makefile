@@ -18,6 +18,7 @@ BUILD_DIR := build
 CSGO_LIB_DIR := hl2sdk-csgo/lib/linux
 CSGO_LIBS := $(addprefix $(CSGO_LIB_DIR)/,libtier0.so libvstdlib.so tier1_i486.a interfaces_i486.a)
 CSGO_LINKING := -Lhl2sdk-csgo/lib/linux $(patsubst $(CSGO_LIB_DIR)/%.a,-l:%.a,$(patsubst $(CSGO_LIB_DIR)/lib%.so,-l%, $(CSGO_LIBS)))
+PROTOBUF_LINKING := $(patsubst -lprotobuf,-l:libprotobuf.a, $(shell pkg-config --cflags --libs protobuf))
 
 PROTOBUF_FLAGS := $(WARNINGS) $(OPTIONS) $(FLAGS) -I$(SOURCE_DIR)/protobuf
 PLUGIN_FLAGS := $(WARNINGS) $(OPTIONS) $(FLAGS) $(EXTRA_FLAGS) $(DEFINES) $(INCLUDES) -I$(SOURCE_DIR) -I$(SOURCE_DIR)/protobuf
@@ -39,7 +40,7 @@ list:
 prepare: $(PROTOBUF_SOURCE)
 
 colorsay.so: $(OBJECT_FILES) $(CSGO_LIBS)
-	$(GCC) $(OBJECT_FILES) $(CSGO_LINKING) $(OPTIONS) -static-libgcc -lstdc++ $(shell pkg-config --cflags --libs protobuf) -shared -o colorsay.so
+	$(GCC) $(OBJECT_FILES) $(CSGO_LINKING) $(PROTOBUF_LINKING) $(OPTIONS) -shared -o colorsay.so
 
 $(BUILD_DIR)/colorsay.o: $(addprefix $(SOURCE_DIR)/,colorsay.cpp colorsay.h recipientfilters.h protobuf/cstrike15_usermessages.pb.h) | $(BUILD_DIR)
 	$(GCC) $< $(PLUGIN_FLAGS) -c -o $@
