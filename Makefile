@@ -29,7 +29,7 @@ PROTOBUF_SOURCE := $(NETMESSAGES_PB_SOURCE) $(CSTRIKE_PB_SOURCE)
 OBJECT_FILES := $(patsubst $(SOURCE_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(wildcard $(SOURCE_DIR)/*.cpp)) $(patsubst $(SOURCE_DIR)/protobuf/%.pb.cc,$(BUILD_DIR)/%.pb.o,$(PROTOBUF_SOURCE))
 
 .PHONY: all
-all: prepare colorsay.so
+all: prepare colorsay.so colorsay.vdf
 
 .PHONY: list
 list:
@@ -50,12 +50,6 @@ $(BUILD_DIR)/%.pb.o: $(addprefix $(SOURCE_DIR)/protobuf/,%.pb.cc %.pb.h) | $(BUI
 $(BUILD_DIR)/%.o: $(addprefix $(SOURCE_DIR)/,%.cpp %.h) | $(BUILD_DIR)
 	$(GCC) $< $(PLUGIN_FLAGS) -c -o $@
 
-$(BUILD_DIR)/libtier0.so: hl2sdk-csgo/lib/linux/libtier0.so
-	cp $^ $@
-
-$(BUILD_DIR)/libvstdlib.so: hl2sdk-csgo/lib/linux/libvstdlib.so
-	cp $^ $@
-
 $(NETMESSAGES_PB_SOURCE): hl2sdk-csgo/public/engine/protobuf/netmessages.proto
 	protoc --proto_path=$(dir $<) --proto_path=/usr/include --cpp_out=$(dir $@) $<
 
@@ -72,22 +66,28 @@ $(BUILD_DIR):
 
 .PHONY: clean
 clean:
-	rm -f colorsay.so
+	rm -f colorsay.so colorsay.vdf
 	rm -rf $(BUILD_DIR)
 	rm -rf $(SOURCE_DIR)/protobuf
 
-CSGO_ADDONS := /home/steam/csgo-ds/csgo/addons
+CSGO_USER := steam
+CSGO_GROUP := steam
+INSTALL_DIR := /home/$(CSGO_USER)/csgo-ds/csgo/addons
 
 .PHONY: install
-install: $(CSGO_ADDONS) $(addprefix $(CSGO_ADDONS)/,colorsay.so colorsay.vdf)
+install: $(INSTALL_DIR) $(addprefix $(INSTALL_DIR)/,colorsay.so colorsay.vdf)
 
-$(CSGO_ADDONS):
+$(INSTALL_DIR):
 	mkdir -p $@
-	chown steam:steam $@
+	chown $(CSGO_USER):$(CSGO_GROUP) $@
 
-$(CSGO_ADDONS)/colorsay.so: colorsay.so
+$(INSTALL_DIR)/colorsay.so: colorsay.so
 	cp $< $@
-	chown steam:steam $@
+	chown $(CSGO_USER):$(CSGO_GROUP) $@
+
+$(INSTALL_DIR)/colorsay.vdf: colorsay.vdf
+	cp colorsay.vdf $@
+	chown $(CSGO_USER):$(CSGO_GROUP) $@
 
 define VDF_CONTENT
 "Plugin"
@@ -97,7 +97,6 @@ define VDF_CONTENT
 endef
 
 export VDF_CONTENT
-$(CSGO_ADDONS)/colorsay.vdf:
+colorsay.vdf:
 	echo "$$VDF_CONTENT" > colorsay.vdf
-	mv colorsay.vdf $@
-	chown steam:steam $@
+	
