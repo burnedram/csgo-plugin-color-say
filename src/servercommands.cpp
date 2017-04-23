@@ -109,6 +109,13 @@ namespace colorsay {
                 "Display colored player message to specified id(s)",
                 FCVAR_SERVER_CAN_EXECUTE);
 
+        static void cc_colorsay_version(const CCommand &args) {
+            ConMsg(PLUGIN_VERSION "\n");
+        }
+        ConCommand ccColorSayVersion("colorsay_version", cc_colorsay_version,
+                "Show ColorSay version",
+                FCVAR_SERVER_CAN_EXECUTE);
+
         void register_commands() {
             Globals::pCVar->RegisterConCommand(&cvAllowClientCommands);
             Globals::pCVar->RegisterConCommand(&ccColorSay);
@@ -116,6 +123,7 @@ namespace colorsay {
             Globals::pCVar->RegisterConCommand(&ccColorSayT);
             Globals::pCVar->RegisterConCommand(&ccColorSayCt);
             Globals::pCVar->RegisterConCommand(&ccColorSayId);
+            Globals::pCVar->RegisterConCommand(&ccColorSayVersion);
         }
 
     }
