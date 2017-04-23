@@ -3,6 +3,26 @@ A CSGO plugin for displaying colored text.
 
 This plugin uses the AlliedModders CSGO SDK [mirror](https://github.com/alliedmodders/hl2sdk/tree/csgo)
 
+# Features
+## Server commands
+These can be used through the server console, or through `rcon`
+* `colorsay`      - All chat
+* `colorsay_spec` - Spectators
+* `colorsay_t`    - Terrorists
+* `colorsay_ct`   - Counter-Terrorists
+## Server convars
+* `colorsay_allow_client` - Enable to allow client commands (disabled by default)
+## Client commands
+These can be used by players through their console.  
+By default these are disabled, but can be enabled with the server convar `colorsay_allow_client 1`.
+* `colorsay say`      - All chat
+* `colorsay say_team` - Player's team chat
+* `colorsay echo`     - Echo a message to yourself, only visible to you!
+* `colorsay list`     - List all available colors, only visible to you!
+* `colorsay help`     - Display available commands, or get help about a particular command
+## Features to come
+* A server command `colorsay_id` which will send a message to only the specified player(s).
+
 # Compilation
 ## You need
 * `pkg-config`
