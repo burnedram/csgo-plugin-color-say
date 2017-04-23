@@ -28,10 +28,14 @@ Download either the .zip or .tar.gz and unpack it to `${CSGO_DS_DIR}/csgo/addons
 # Features
 ## Server commands
 These can be used through the server console, or through `rcon`
-* `colorsay`      - All chat
-* `colorsay_spec` - Spectators
-* `colorsay_t`    - Terrorists
-* `colorsay_ct`   - Counter-Terrorists
+* `colorsay`         - All chat
+* `colorsay_spec`    - Spectators
+* `colorsay_t`       - Terrorists
+* `colorsay_ct`      - Counter-Terrorists
+* `colorsay_id`      - First argument is comma-separated steamIDs, text after is message sent to only those players  
+  Example: `colorsay_id "STEAM_0:1:01234567,STEAM_0:1:76543210" This is a {#4}spooky{#1} message`  
+  Note the citation marks around the steamIDs.
+* `colorsay_version` - Prints the version of the ColorSay plugin
 ## Server convars
 * `colorsay_allow_client` - Enable to allow client commands (disabled by default)
 ## Client commands
@@ -42,8 +46,6 @@ By default these are disabled, but can be enabled with the server convar `colors
 * `colorsay echo`     - Echo a message to yourself, only visible to you!
 * `colorsay list`     - List all available colors, only visible to you!
 * `colorsay help`     - Display available commands, or get help about a particular command
-## Features to come
-* A server command `colorsay_id` which will send a message to only the specified player(s).
 
 # How to add color to your messages
 All chat related commands are colorized by formatting the message with color tags.  
