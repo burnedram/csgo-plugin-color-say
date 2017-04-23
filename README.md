@@ -44,7 +44,8 @@ By default these are disabled, but can be enabled with the server convar `colors
 * A server command `colorsay_id` which will send a message to only the specified player(s).
 
 # How to add color to your messages
-All chat related commands are colorized by formatting the message with color tags. 
+All chat related commands are colorized by formatting the message with color tags.  
+A good way of familiarizing yourself with useage of color tags is to set up a test server with this plugin installed. Type `colorsay_allow_client 1` in the server console, join the server, and play around with the `colorsay` command in your client console.
 ## Color tags
 A color tag starts with `{#` and ends with `}`. The text inside the tag defines what color to use.  
 To define a color you can either use their integer value, or their name.
