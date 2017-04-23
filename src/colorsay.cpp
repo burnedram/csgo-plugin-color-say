@@ -154,5 +154,16 @@ namespace colorsay {
 
     void ColorSayPlugin::OnEdictFreed(const edict_t *edict) {
     }
+    
+    // added with version 4 of the interface
+	bool ColorSayPlugin::BNetworkCryptKeyCheckRequired(uint32 unFromIP, uint16 usFromPort, uint32 unAccountIdProvidedByClient, bool bClientWantsToUseCryptKey) {
+        return false;
+    }
+
+	bool ColorSayPlugin::BNetworkCryptKeyValidate(uint32 unFromIP, uint16 usFromPort, uint32 unAccountIdProvidedByClient,
+                                                  int nEncryptionKeyIndexFromClient, int numEncryptedBytesFromClient,
+                                                  byte *pbEncryptedBufferFromClient, byte *pbPlainTextKeyForNetchan) {
+        return false;
+    }
 
 }
