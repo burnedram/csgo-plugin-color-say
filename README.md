@@ -23,6 +23,8 @@ License: [MIT](/LICENSE.md)
 
 # Releases
 Download either the .zip or .tar.gz and unpack it to `${CSGO_DS_DIR}/csgo/addons`.
+* [Latest](https://github.com/burnedram/csgo-plugin-color-say/releases/latest)
+* [v1.0](https://github.com/burnedram/csgo-plugin-color-say/releases/tag/v0.9) - Added `colorsay_version` and `colorsay_id`
 * [v0.9](https://github.com/burnedram/csgo-plugin-color-say/releases/tag/v0.9) - First release
 
 # Features
