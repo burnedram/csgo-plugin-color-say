@@ -4,6 +4,7 @@
 #include "chatcolor.h"
 #include "utils.h"
 
+#include <unordered_set>
 using namespace std;
 
 #define UNASSIGNED 0
@@ -57,12 +58,64 @@ namespace colorsay {
                 "Display colored player message to CTs",
                 FCVAR_SERVER_CAN_EXECUTE);
 
+        static void cc_colorsay_id(const CCommand &args) {
+            if (args.ArgC() < 3) {
+                ConMsg("usage: colorsay_id <comma separated ids> <message>\n");
+                return;
+            }
+
+            unordered_set<string> netids;
+            netids.reserve(Globals::maxPlayers);
+            string netstring = args.Arg(1);
+            size_t pos = 0, csv = netstring.find(',');
+            while (true) {
+                size_t len = csv == string::npos ? string::npos : csv - pos;
+                string netid = netstring.substr(pos, len);
+                if (!netid.empty()) {
+                    netids.insert(netid);
+                }
+                if (csv == string::npos)
+                    break;
+                pos = csv + 1;
+                csv = netstring.find(',', pos);
+            }
+
+            vector<int> indices;
+            indices.reserve(Globals::maxPlayers);
+            for (int index = 1; index <= Globals::maxPlayers; index++) {
+                edict_t *pEdict = ENTEDICT(index);
+                if(Globals::pEngine->GetPlayerUserId(pEdict) == -1)
+                    continue;
+                IPlayerInfo *pInfo = Globals::pPlayerInfoManager->GetPlayerInfo(pEdict);
+                const char *pNetId = pInfo->GetNetworkIDString();
+                if (pNetId && netids.find(pNetId) != netids.end())
+                    indices.push_back(index);
+            }
+            if (!indices.empty()) {
+                string stl_args(args.ArgS() + netstring.length());
+                size_t trim = stl_args.find_first_of(" \t");
+                if(trim != string::npos)
+                    stl_args = stl_args.substr(trim);
+                trim = stl_args.find_first_not_of(" \t");
+                if(trim != string::npos)
+                    stl_args = stl_args.substr(trim);
+
+                if (!chatcolor::parse_colors(stl_args))
+                    ConMsg("Message contains bad tags");
+                chat::say(indices, stl_args);
+            }
+        }
+        ConCommand ccColorSayId("colorsay_id", cc_colorsay_id,
+                "Display colored player message to specified id(s)",
+                FCVAR_SERVER_CAN_EXECUTE);
+
         void register_commands() {
             Globals::pCVar->RegisterConCommand(&cvAllowClientCommands);
             Globals::pCVar->RegisterConCommand(&ccColorSay);
             Globals::pCVar->RegisterConCommand(&ccColorSaySpec);
             Globals::pCVar->RegisterConCommand(&ccColorSayT);
             Globals::pCVar->RegisterConCommand(&ccColorSayCt);
+            Globals::pCVar->RegisterConCommand(&ccColorSayId);
         }
 
     }
