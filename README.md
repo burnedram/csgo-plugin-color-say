@@ -5,6 +5,20 @@ Tested on Ubuntu 16.04.2 LTS (4.4.0-59-generic, x86_64), but should work any deb
 I have no intention of creating a Windows version of this, but it should just be a matter of compiling.  
 This plugin uses the AlliedModders CSGO SDK [mirror](https://github.com/alliedmodders/hl2sdk/tree/csgo).
 
+# Table of Contents
+   * [Releases](#releases)
+   * [Features](#features)
+      * [Server commands](#server-commands)
+      * [Server convars](#server-convars)
+      * [Client commands](#client-commands)
+      * [Features to come](#features-to-come)
+   * [How to add color to your messages](#how-to-add-color-to-your-messages)
+      * [Color tags](#color-tags)
+      * [Examples](#examples)
+   * [Compilation](#compilation)
+   * [Installation](#installation)
+
+
 # Releases
 Download either the .zip or .tar.gz and unpack it to `${CSGO_DS_DIR}/csgo/addons`.
 * [v0.9](https://github.com/burnedram/csgo-plugin-color-say/releases/tag/v0.9) - First release
