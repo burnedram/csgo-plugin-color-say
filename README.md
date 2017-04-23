@@ -1,7 +1,13 @@
 # colorsay
-A CSGO plugin for displaying colored text.
+A CSGO plugin for displaying colored text.  
+Tested on Ubuntu 16.04.2 LTS (4.4.0-59-generic, x86_64), but should work any debian based distro.  
 
-This plugin uses the AlliedModders CSGO SDK [mirror](https://github.com/alliedmodders/hl2sdk/tree/csgo)
+I have no intention of creating a Windows version of this, but it should just be a matter of compiling.  
+This plugin uses the AlliedModders CSGO SDK [mirror](https://github.com/alliedmodders/hl2sdk/tree/csgo).
+
+# Releases
+Download either the .zip or .tar.gz and unpack it to `${CSGO_DS_DIR}/csgo/addons`.
+* [v0.9](https://github.com/burnedram/csgo-plugin-color-say/releases/tag/v0.9) - First release
 
 # Features
 ## Server commands
