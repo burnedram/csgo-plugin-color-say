@@ -38,3 +38,6 @@ src/protobuf
 # Ctags/clang
 tags
 compile_commands.json
+
+# Valve VDF
+*.vdf
