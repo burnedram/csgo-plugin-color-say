@@ -29,6 +29,35 @@ By default these are disabled, but can be enabled with the server convar `colors
 ## Features to come
 * A server command `colorsay_id` which will send a message to only the specified player(s).
 
+# How to add color to your messages
+All chat related commands are colorized by formatting the message with color tags. 
+## Color tags
+A color tag starts with `{#` and ends with `}`. The text inside the tag defines what color to use.  
+To define a color you can either use their integer value, or their name.
+
+| Value | Name            | Color |
+|:-----:|:---------------:|:-----:|
+| 1     | White           |![#ffffff](https://placehold.it/15/ffffff/000000?text=+)|
+| 2     | Red             |![#ee0202](https://placehold.it/15/ee0202/000000?text=+)|
+| 3     | Lavender        |![#b981ef](https://placehold.it/15/b981ef/000000?text=+)|
+| 4     | Green           |![#40fe40](https://placehold.it/15/40fe40/000000?text=+)|
+| 5     | Pale green      |![#befe8f](https://placehold.it/15/befe8f/000000?text=+)|
+| 6     | Green yellow    |![#a1fe47](https://placehold.it/15/a1fe47/000000?text=+)|
+| 7     | Coral red       |![#fe4040](https://placehold.it/15/fe4040/000000?text=+)|
+| 8     | Light grey      |![#c4c9cf](https://placehold.it/15/c4c9cf/000000?text=+)|
+| 9     | Light Goldenrod |![#ece37a](https://placehold.it/15/ece37a/000000?text=+)|
+| 10    | Echo blue       |![#aec1d7](https://placehold.it/15/aec1d7/000000?text=+)|
+| 11    | Picton blue     |![#5e97d8](https://placehold.it/15/5e97d8/000000?text=+)|
+| 12    | Royal blue      |![#4b69fe](https://placehold.it/15/4b69fe/000000?text=+)|
+| 13    | Purple          |![#8847fe](https://placehold.it/15/8847fe/000000?text=+)|
+| 14    | Neon purple     |![#d22ce5](https://placehold.it/15/d22ce5/000000?text=+)|
+| 15    | Vermilion       |![#ea4b4b](https://placehold.it/15/ea4b4b/000000?text=+)|
+| 16    | Orange gold     |![#e1ac39](https://placehold.it/15/e1ac39/000000?text=+)|
+## Examples
+* `colorsay I am {#royal blue}blue{#white} da ba dee da ba die...`
+* `colorsay I am {#12}blue{#1} da ba dee da ba die...`
+* `colorsay {#2}R{#16}a{#9}i{#4}n{#11}b{#12}o{#13}w`
+
 # Compilation
 ## You need
 * `pkg-config`
