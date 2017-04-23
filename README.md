@@ -5,6 +5,8 @@ Tested on Ubuntu 16.04.2 LTS (4.4.0-59-generic, x86_64), but should work any deb
 I have no intention of creating a Windows version of this, but it should just be a matter of compiling.  
 This plugin uses the AlliedModders CSGO SDK [mirror](https://github.com/alliedmodders/hl2sdk/tree/csgo).
 
+License: [MIT](/LICENSE.md)
+
 # Table of Contents
    * [Releases](#releases)
    * [Features](#features)
